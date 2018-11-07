@@ -11,17 +11,100 @@ wp-content/backupwordpress-*/
 wp-content/managewp/backups/
 wp-content/advanced-cache.php
 wp-content/wp-cache-config.php
+wp-admin/
+wp-includes/
 sitemap.xml
 sitemap.xml.gz
 *.log
-
-# @TODO writable paths
-wp-content/cache/
+.htaccess
 wp-content/backups/
+wp-content/cache/
+wp-content/mu-plugins/*
+wp-content/plugins/*
+wp-content/themes/*
+wp-content/upgrade/*
+wp-content/uploads/*
+wp-content/vendor/
+db-sync/
+local-config.php
+robots.txt
+wp-local-config.php
 
 # Avoid accidental modification of pantheon.upstream.yml in sites
 # created from this upstream
 pantheon.upstream.yml
+
+pantheon.yml
+
+# WP Core #
+###########
+readme.html
+wp-activate.php
+wp-blog-header.php
+wp-comments-post.php
+wp-config.php
+wp-config-sample.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
+xmlrpc.php
+index.php
+license.txt
+
+# OS files #
+############
+._*
+.AppleDouble
+.DS_Store
+.DS_Store?
+.LSOverride
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Icon?
+
+
+# IDEs and Editors #
+####################
+_notes
+.cache
+.idea
+.project
+.settings
+*.esproj
+*.sublime-*
+*.tmproj
+*.tmproject
+*.vi
+dwsync.xml
+nbproject
+tmtags
+atlassian-ide-plugin.xml
+*.iml
+sftp_config.json
+
+# Miscellaneous #
+#################
+.vagrant
+*.bak
+*.diff
+*.err
+*.orig
+*.rej
+*.sass-cache
+*.sql
+*.swo
+*.swp
+*.zip
+*~
+node_modules
+parameters.yml
 
 # Packages #
 ############
@@ -37,18 +120,6 @@ pantheon.upstream.yml
 *.tgz
 !wp-includes/**/*.gz
 
-# Logs and databases #
-######################
-*.log
-*.sql
-
-# OS generated files #
-######################
-.DS_Store*
-ehthumbs.db
-Icon?
-Thumbs.db
-._*
 
 # Vim generated files #
 ######################
@@ -57,3 +128,24 @@ Thumbs.db
 # SASS #
 ##########
 .sass-cache
+
+################################################################################
+# Custom/premium items that can't be managed via Composer should be WHITELISTED
+################################################################################
+
+# WHITELIST composer.lock #
+###########################
+!composer.lock
+
+# WHITELIST themes #
+####################
+!wp-content/themes/bb-theme
+!wp-content/themes/bb-theme-child
+
+# WHITELIST plugins gitkeep #
+#############################
+!wp-content/plugins/bb-plugin
+
+# WHITELIST mu-plugins #
+########################
+!wp-content/themes/my-custom-mu-plugin
