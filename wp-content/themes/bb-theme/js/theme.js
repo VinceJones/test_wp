@@ -207,7 +207,19 @@
 				retinaSrc   = image.data( 'retina' ),
 				type        = src.split('.').pop();
 
-			if ( '' != retinaSrc ) {
+			// check for cloudflare
+			if( typeof src == 'undefined') {
+				src = image.data( 'cfsrc' )
+			}
+
+			// still no src, bail.
+			if( typeof src == 'undefined') {
+				return false;
+			}
+
+			var type = src.split('.').pop();
+
+			if ( '' != retinaSrc  ) {
 
 				tmpImage.onload = function() {
 					var width = tmpImage.width,

@@ -35,9 +35,20 @@ final class FLBuilderFonts {
 	static public function js() {
 		$default = json_encode( apply_filters( 'fl_builder_font_families_default', FLBuilderFontFamilies::$default ) );
 		$system  = json_encode( apply_filters( 'fl_builder_font_families_system', FLBuilderFontFamilies::$system ) );
-		$google  = json_encode( apply_filters( 'fl_builder_font_families_google', FLBuilderFontFamilies::google() ) );
+		$google  = json_encode( apply_filters( 'fl_builder_font_families_google', self::prepare_google_fonts( FLBuilderFontFamilies::google() ) ) );
 
 		echo 'var FLBuilderFontFamilies = { default: ' . $default . ', system: ' . $system . ', google: ' . $google . ' };';
+	}
+
+	static public function prepare_google_fonts( $fonts ) {
+		foreach ( $fonts as $family => $variants ) {
+			foreach ( $variants as $k => $variant ) {
+				if ( 'italic' == $variant || 'i' == substr( $variant, -1 ) ) {
+					unset( $fonts[ $family ][ $k ] );
+				}
+			}
+		}
+		return $fonts;
 	}
 
 	/**
@@ -195,9 +206,33 @@ final class FLBuilderFonts {
 	static public function add_fonts_for_module( $module ) {
 		$fields = FLBuilderModel::get_settings_form_fields( $module->form );
 
+		// needed for italics.
+		$google = FLBuilderFontFamilies::google();
+
 		foreach ( $fields as $name => $field ) {
 			if ( 'font' == $field['type'] && isset( $module->settings->$name ) ) {
 				self::add_font( $module->settings->$name );
+			} elseif ( 'typography' == $field['type'] && ! empty( $module->settings->$name ) && isset( $module->settings->{ $name }['font_family'] ) ) {
+				$fname  = $module->settings->{ $name }['font_family'];
+				$weight = $module->settings->{ $name }['font_weight'];
+
+				// handle google italics.
+				if ( isset( $google[ $fname ] ) ) {
+					$selected_weight = $module->settings->{ $name }['font_weight'];
+					$italic          = ( isset( $module->settings->{ $name }['font_style'] ) ) ? $module->settings->{ $name }['font_style'] : '';
+
+					if ( in_array( $selected_weight . 'i', $google[ $fname ] ) && 'italic' == $italic ) {
+						$weight = $selected_weight . 'i';
+					}
+					if ( '400' == $selected_weight && in_array( 'italic', $google[ $fname ] ) ) {
+						$weight = '400i';
+					}
+				}
+
+				self::add_font( array(
+					'family' => $module->settings->{ $name }['font_family'],
+					'weight' => $weight,
+				) );
 			} elseif ( isset( $field['form'] ) ) {
 				$form = FLBuilderModel::$settings_forms[ $field['form'] ];
 				self::add_fonts_for_nested_module_form( $module, $form['tabs'], $name );
@@ -501,7 +536,6 @@ final class FLBuilderFontFamilies {
 		}
 		return false;
 	}
-
 
 	/**
 	 * Array with a list of system fonts.

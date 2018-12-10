@@ -1,3 +1,21 @@
+<h4>1.7.1 12/05/2018</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Minimal version of Bootstrap 4 added!</li>
+	<li>Removed old IE8 javascript shims from header.</li>
+	<li>New filter <code>fl_theme_compile_less_overide</code> to pass css to alternate compiler.</li>
+	<li>Use try/catch while compiling less and print to errorlog if compile fails.</li>
+	<li>Tagline added to all header layouts if using text based logo.</li>
+</ul>
+
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed italic Google Fonts on mobile devices.</li>
+	<li>Fixed image stretching if post is edited using Gutenberg.</li>
+	<li>Fixed parallax footer links when using IE11.</li>
+	<li>Pingback urls should only be on posts with comments and only if enabled.</li>
+</ul>
+
 <h4>1.7.0.3 10/01/2018</h4>
 <p><strong>Hot Fix</strong></p>
 <ul>

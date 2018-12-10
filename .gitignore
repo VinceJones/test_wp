@@ -145,6 +145,10 @@ parameters.yml
 # WHITELIST plugins gitkeep #
 #############################
 !wp-content/plugins/bb-plugin
+!wp-content/plugins/bb-theme-builder
+!wp-content/plugins/chained-quiz
+!wp-content/plugins/nerd-products
+!wp-content/plugins/wp-sync-db
 
 # WHITELIST mu-plugins #
 ########################

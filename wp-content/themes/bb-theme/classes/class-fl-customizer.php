@@ -264,14 +264,16 @@ final class FLCustomizer {
 
 		// No css key, recompile the css.
 		if ( ! $css_key ) {
-			if ( false !== self::_compile_css() ) {
+			$compiled = self::_compile_css();
+			if ( false !== $compiled && ! is_wp_error( $compiled ) ) {
 				return self::css_url();
 			}
 		}
 
 		// Check to see if the file exists.
 		if ( ! fl_theme_filesystem()->file_exists( $css_path ) ) {
-			if ( false !== self::_compile_css() ) {
+			$compiled = self::_compile_css();
+			if ( false !== $compiled && ! is_wp_error( $compiled ) ) {
 				return self::css_url();
 			}
 		}
@@ -848,12 +850,12 @@ final class FLCustomizer {
 	 * @return void
 	 */
 	static private function _compile_css() {
-		$theme_info   = wp_get_theme();
-		$cache_dir    = self::get_cache_dir();
-		$new_css_key  = uniqid();
-		$css_slug     = self::_css_slug();
-		$filename     = $cache_dir['path'] . $css_slug . '-' . $new_css_key . '.css';
-		$paths		  = self::_get_less_paths();
+		$theme_info  = wp_get_theme();
+		$cache_dir   = self::get_cache_dir();
+		$new_css_key = uniqid();
+		$css_slug    = self::_css_slug();
+		$filename    = $cache_dir['path'] . $css_slug . '-' . $new_css_key . '.css';
+		$paths       = self::_get_less_paths();
 
 		// Loop over paths and get contents
 		$css = FLCSS::paths_get_contents( $paths );
@@ -866,6 +868,11 @@ final class FLCustomizer {
 
 		// Compile LESS
 		$css = self::_compile_less( $css );
+
+		if ( is_wp_error( $css ) ) {
+			error_log( 'Less compile aborted. No file written.' );
+			return $css;
+		}
 
 		// Compress
 		if ( ! WP_DEBUG ) {
@@ -1027,6 +1034,7 @@ final class FLCustomizer {
 		$vars['heading-font']                   = self::_get_font_family_string( $mods['fl-heading-font-family'] );
 		$vars['heading-weight']                 = self::_sanitize_weight( $mods['fl-heading-font-weight'] );
 		$vars['heading-transform']              = $mods['fl-heading-font-format'];
+		$vars['heading-style'] = self::_get_style( $mods['fl-heading-font-weight'] );
 
 		$vars['title-color']				= FLColor::hex( $mods['fl-title-text-color'] );
 		$vars['title-font']					= self::_get_font_family_string( $mods['fl-title-font-family'] );
@@ -1308,6 +1316,18 @@ final class FLCustomizer {
 
 		$weight = str_replace( 'italic', '', $weight );
 		return empty( $weight ) ? 400 : $weight;
+	}
+
+	/**
+	 * Get font style.
+	 * @since 1.7.1
+	 */
+	static private function _get_style( $weight ) {
+
+		if ( false !== strpos( $weight, 'italic' ) ) {
+			return 'italic';
+		}
+		return 'normal';
 	}
 
 	/**
